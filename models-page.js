@@ -384,8 +384,8 @@
         $("hmBrand").value = b || "";
         onBrand();
       });
-      window.addEventListener("scroll", syncFloat, { passive: true });
     }
+    window.addEventListener("scroll", syncFloat, { passive: true });
 
     function applyModels(m) {
       MODELS = m;
