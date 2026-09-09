@@ -395,29 +395,26 @@
     var pinned = bar.classList.contains("pinned");
     var anchor = pinned ? barSpacer.getBoundingClientRect().top : bar.getBoundingClientRect().top;
 
+    // The bar stays inside #hm: every style rule is scoped to that id, so
+    // relocating it to <body> strips its styling and it vanishes.
     if (!pinned && anchor < top) {
       barSpacer.style.height = bar.offsetHeight + "px";
       barSpacer.style.display = "block";
-      // A transform/filter/perspective on any ancestor makes position:fixed
-      // resolve against that ancestor instead of the viewport, so the bar is
-      // parked on <body> for as long as it is pinned.
-      barHome = bar.parentNode;
-      document.body.appendChild(bar);
       bar.classList.add("pinned");
       pinned = true;
     } else if (pinned && anchor >= top) {
       bar.classList.remove("pinned");
-      if (barHome) barHome.insertBefore(bar, barSpacer.nextSibling);
       barSpacer.style.display = "none";
       bar.style.top = "";
+      bar.style.left = "";
       bar.style.width = "";
       pinned = false;
     }
     if (pinned) {
+      var box = barSpacer.getBoundingClientRect();
       bar.style.top = top + "px";
-      var w = (barSpacer.parentNode && barSpacer.parentNode.getBoundingClientRect().width) || window.innerWidth;
-      bar.style.width = Math.round(w) + "px";
-      bar.style.left = Math.round(barSpacer.getBoundingClientRect().left) + "px";
+      bar.style.left = Math.round(box.left) + "px";
+      bar.style.width = Math.round(box.width) + "px";
     }
   }
 
