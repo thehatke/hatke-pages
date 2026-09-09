@@ -170,7 +170,7 @@
         '<div class="sug" id="hsSug" hidden></div>' +
         '<p class="hint">Can\u2019t find it? Measure the gap where the strap meets the case, in millimetres.</p></section>'
       : "";
-    return '<button class="back" data-back="fit">\u2190 Change watch</button>' + searchBlock +
+    return backBar("fit", "Change watch") + searchBlock +
       '<section class="sec"><h2>' + (hasTable ? "Or choose the width" : "Choose your strap width") + '</h2><div class="rule"></div>' +
       '<div class="pick lugs">' + lugOpts + '</div>' +
       (hasTable ? "" : '<p class="hint">The width is the gap where the strap meets the watch case \u2014 often printed on the back of the watch.</p>') +
