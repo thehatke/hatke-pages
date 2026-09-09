@@ -342,7 +342,7 @@
      control living inside it. position:sticky can't be used — the theme's
      content wrapper has overflow:hidden, which kills it — so the bar is
      switched to position:fixed and a spacer holds its place in the flow. */
-  var barSpacer = null, barHome = null;
+  var barSpacer = null, barHome = null, pinLeft = 0, pinWidth = 0;
   function ensureFloat() {
     var bar = document.querySelector("#hm .bar");
     if (!bar) return null;
