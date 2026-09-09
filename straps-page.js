@@ -293,6 +293,12 @@
     ]).then(function (r) {
       DATA = r[0]; LUGTBL = r[1];
       if (!DATA || !DATA.products || !DATA.products.length) throw new Error("empty catalogue");
+      // deep link / refresh: honour whatever step the URL points at
+      state = fromHash();
+      window.addEventListener("popstate", function () {
+        state = fromHash();
+        render();
+      });
       render();
     }).catch(function (e) {
       $("hsBody").innerHTML = '<div class="note">Couldn\u2019t load straps right now. Please refresh.</div>';
