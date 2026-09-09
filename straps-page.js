@@ -231,13 +231,15 @@
     function on(sel, fn) {
       host.querySelectorAll(sel).forEach(function (b) { b.addEventListener("click", function () { fn(b); }); });
     }
-    on("[data-fit]", function (b) { state.fit = b.getAttribute("data-fit"); state.size = null; state.style = null; render(); });
-    on("[data-size]", function (b) { state.size = b.getAttribute("data-size"); state.style = null; render(); });
-    on("[data-lug]", function (b) { state.size = b.getAttribute("data-lug"); state.style = null; render(); });
-    on("[data-style]", function (b) { state.style = b.getAttribute("data-style") || null; render(); });
+    on("[data-fit]", function (b) { nav({ fit: b.getAttribute("data-fit"), size: null, style: null }); });
+    on("[data-size]", function (b) { nav({ size: b.getAttribute("data-size"), style: null }); });
+    on("[data-lug]", function (b) { nav({ size: b.getAttribute("data-lug"), style: null }); });
+    on("[data-style]", function (b) { nav({ style: b.getAttribute("data-style") || null }); });
     on("[data-back]", function (b) {
-      if (b.getAttribute("data-back") === "fit") { state.fit = null; }
-      state.size = null; state.style = null; render();
+      // Use real history when we can, so forward still works and no entry is stranded.
+      if (window.history && history.length > 1) { history.back(); return; }
+      if (b.getAttribute("data-back") === "fit") nav({ fit: null, size: null, style: null });
+      else nav({ size: null, style: null });
     });
     var q = $("hsQ");
     if (q) q.addEventListener("input", onSearch);
