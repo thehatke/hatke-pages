@@ -324,6 +324,7 @@
         state = fromHash();
         render();
       });
+      window.addEventListener("scroll", syncFloat, { passive: true });
       render();
     }).catch(function (e) {
       $("hsBody").innerHTML = '<div class="note">Couldn\u2019t load straps right now. Please refresh.</div>';
