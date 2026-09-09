@@ -338,26 +338,33 @@
 
   /* Floating back button. Mounted on <body> rather than inside the theme's
      content wrapper, which clips position:sticky. */
-  var floatBtn = null;
+  /* The filter bar is pinned to the top once scrolled past, with the back
+     control living inside it. position:sticky can't be used — the theme's
+     content wrapper has overflow:hidden, which kills it — so the bar is
+     switched to position:fixed and a spacer holds its place in the flow. */
+  var barSpacer = null;
   function ensureFloat() {
-    if (floatBtn) return floatBtn;
-    floatBtn = document.createElement("button");
-    floatBtn.id = "hm-float";
-    floatBtn.type = "button";
-    floatBtn.innerHTML = "\u2190 All brands";
-    floatBtn.addEventListener("click", function () {
-      // Locked single-brand page: there is no in-page step to go back to,
-      // so send them to the brand hub instead of out of the site.
-      if (LOCK) { location.href = "/pages/phonecases"; return; }
-      if (window.history && history.length > 1) history.back();
-      else navBrand(null);
-    });
-    document.body.appendChild(floatBtn);
-    return floatBtn;
+    var bar = document.querySelector("#hm .bar");
+    if (!bar) return null;
+    if (!document.getElementById("hm-barback")) {
+      var b = document.createElement("button");
+      b.id = "hm-barback";
+      b.type = "button";
+      b.textContent = "\u2190 All brands";
+      b.addEventListener("click", function () {
+        if (LOCK) { location.href = "/pages/phonecases"; return; }
+        if (window.history && history.length > 1) history.back();
+        else navBrand(null);
+      });
+      bar.appendChild(b);
+    }
+    if (!barSpacer) {
+      barSpacer = document.createElement("div");
+      barSpacer.style.display = "none";
+      bar.parentNode.insertBefore(barSpacer, bar);
+    }
+    return bar;
   }
-  // Park the pill just below whatever the theme has pinned to the top
-  // (announcement bar + header). Measured live, since that height changes
-  // between scroll states and breakpoints.
   function headerBottom() {
     var sels = ["#shopify-section-header", ".site-header", "header.site-header", "#SiteHeader", "header"];
     var low = 0;
@@ -372,11 +379,25 @@
     return low;
   }
   function syncFloat() {
-    var b = ensureFloat();
-    var scrolled = (window.pageYOffset || document.documentElement.scrollTop || 0) > 220;
-    var show = (!!brand || !!LOCK) && scrolled;
-    b.classList.toggle("on", show);
-    if (show) b.style.top = Math.max(12, Math.round(headerBottom()) + 10) + "px";
+    var bar = ensureFloat();
+    if (!bar) return;
+    var back = document.getElementById("hm-barback");
+    if (back) back.classList.toggle("on", !!brand || !!LOCK);
+
+    var top = Math.max(0, Math.round(headerBottom()));
+    var anchor = barSpacer.style.display === "block"
+      ? barSpacer.getBoundingClientRect().top
+      : bar.getBoundingClientRect().top;
+
+    if (anchor < top && !bar.classList.contains("pinned")) {
+      barSpacer.style.height = bar.offsetHeight + "px";
+      barSpacer.style.display = "block";
+      bar.classList.add("pinned");
+    } else if (anchor >= top && bar.classList.contains("pinned")) {
+      bar.classList.remove("pinned");
+      barSpacer.style.display = "none";
+    }
+    if (bar.classList.contains("pinned")) bar.style.top = top + "px";
   }
 
   function start() {
