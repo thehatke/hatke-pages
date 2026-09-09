@@ -143,7 +143,7 @@
       heading = "Apple Watch \u2014 " + (meta ? meta.label : size);
     } else {
       list = forLug(size);
-      heading = size + " straps";
+      heading = (FIT_LABEL[size] || size) + " straps";
     }
     var all = list.slice();
     if (state.style) list = list.filter(function (p) { return p.style === state.style; });
