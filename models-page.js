@@ -346,6 +346,9 @@
     floatBtn.type = "button";
     floatBtn.innerHTML = "\u2190 All brands";
     floatBtn.addEventListener("click", function () {
+      // Locked single-brand page: there is no in-page step to go back to,
+      // so send them to the brand hub instead of out of the site.
+      if (LOCK) { location.href = "/pages/phonecases"; return; }
       if (window.history && history.length > 1) history.back();
       else navBrand(null);
     });
@@ -353,10 +356,9 @@
     return floatBtn;
   }
   function syncFloat() {
-    if (LOCK) return;
     var b = ensureFloat();
     var scrolled = (window.pageYOffset || document.documentElement.scrollTop || 0) > 220;
-    b.classList.toggle("on", !!brand && scrolled);
+    b.classList.toggle("on", (!!brand || !!LOCK) && scrolled);
   }
 
   function start() {
