@@ -283,7 +283,12 @@
     var list = MODELS[brand] || [];
     var back = document.createElement("a");
     back.className = "back"; back.href = "#"; back.textContent = "\u2190 All brands";
-    back.addEventListener("click", function (e) { e.preventDefault(); $("hmBrand").value = ""; onBrand(); try { $("hmBody").scrollIntoView({ block: "start" }); } catch (err) {} });
+    back.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (window.history && history.length > 1) { history.back(); return; }
+      navBrand(null);
+      try { $("hmBody").scrollIntoView({ block: "start" }); } catch (err) {}
+    });
     host.appendChild(back);
     if (!list.length) { host.insertAdjacentHTML("beforeend", '<div class="note">No models in stock for ' + esc(brand || "this brand") + ' right now.</div>'); return; }
     host.appendChild(brandSection(brand));
