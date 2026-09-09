@@ -385,7 +385,16 @@
       window.addEventListener("scroll", syncFloat, { passive: true });
     }
 
-    function applyModels(m) { MODELS = m; if (LOCK) { brand = LOCK; } else { renderBrandSelect(); } renderModelSelect(); renderGrid(); renderIndex(); }
+    function applyModels(m) {
+      MODELS = m;
+      if (LOCK) { brand = LOCK; }
+      else {
+        renderBrandSelect();
+        var deep = brandFromHash();
+        if (deep && MODELS[deep]) { brand = deep; $("hmBrand").value = deep; $("hmBrand").classList.remove("empty"); }
+      }
+      renderModelSelect(); renderGrid(); renderIndex(); syncFloat();
+    }
     var quick = cached() || preloaded();
     if (quick) { applyModels(quick); if (LOCK) pruneBrand(LOCK); }
     function refresh(attempt) {
