@@ -365,16 +365,23 @@
     }
     return bar;
   }
+  // Probe down the top of the viewport for whatever is actually pinned there
+  // (announcement bar, header, app bars). Selector guessing missed the theme's
+  // real header, which left the bar parked behind it.
   function headerBottom() {
-    var sels = ["#shopify-section-header", ".site-header", "header.site-header", "#SiteHeader", "header"];
-    var low = 0;
-    for (var i = 0; i < sels.length; i++) {
-      var el = document.querySelector(sels[i]);
-      if (!el) continue;
-      var cs = window.getComputedStyle(el);
-      if (cs.position !== "fixed" && cs.position !== "sticky") continue;
-      var r = el.getBoundingClientRect();
-      if (r.bottom > low) low = r.bottom;
+    var low = 0, x = Math.round(window.innerWidth / 2), lim = window.innerHeight * 0.45;
+    if (!document.elementsFromPoint) return 0;
+    for (var y = 2; y <= 300; y += 10) {
+      var els = document.elementsFromPoint(x, y) || [];
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (!el || el === document.body || el === document.documentElement) continue;
+        if (el.id === "hm-barback" || (el.closest && el.closest("#hm"))) continue;
+        var cs = window.getComputedStyle(el);
+        if (cs.position !== "fixed" && cs.position !== "sticky") continue;
+        var b = el.getBoundingClientRect().bottom;
+        if (b > low && b < lim) low = b;
+      }
     }
     return low;
   }
