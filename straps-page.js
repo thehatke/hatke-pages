@@ -12,9 +12,19 @@
 (function () {
   var BASE = "https://cdn.jsdelivr.net/gh/thehatke/hatke-pages@main/";
 
+  // Series lists come from the mapping already maintained on /pages/straps-preview.
+  // NOTE 42mm appears in BOTH bands: Series 1-3 at 42mm take the large strap,
+  // but Series 10 at 42mm takes the small one. The series list is what actually
+  // disambiguates that, which is why it is shown.
   var APPLE_SIZES = [
-    { key: "42/44/45/46/49mm", label: "Large", sub: "42 \u00b7 44 \u00b7 45 \u00b7 46 \u00b7 49mm" },
-    { key: "38/40/41mm", label: "Small", sub: "38 \u00b7 40 \u00b7 41mm" }
+    {
+      key: "42/44/45/46/49mm", label: "Large", sub: "42 \u00b7 44 \u00b7 45 \u00b7 46 \u00b7 49mm",
+      series: ["Ultra & Ultra 2 (49mm)", "Series 10 (46mm)", "Series 9, 8, 7 (45mm)", "SE, Series 6, 5, 4 (44mm)", "Series 3, 2, 1 (42mm)"]
+    },
+    {
+      key: "38/40/41mm", label: "Small", sub: "38 \u00b7 40 \u00b7 41mm",
+      series: ["Series 10 (42mm)", "Series 9, 8, 7 (41mm)", "SE, Series 6, 5, 4 (40mm)", "Series 3, 2, 1 (38mm)"]
+    }
   ];
   // Non-Apple fit options come from the catalogue, so a fit with no products
   // never shows and a new one (Mi Band, 18mm...) appears on its own.
