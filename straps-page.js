@@ -152,7 +152,7 @@
         '<span class="srs">' + series + '</span>' +
         '<span class="s">' + n + ' straps \u203a</span></button>';
     }).join("");
-    return '<button class="back" data-back="fit">\u2190 Change watch</button>' +
+    return backBar("fit", "Change watch") +
       '<section class="sec"><h2>Which Apple Watch do you have?</h2><div class="rule"></div>' +
       '<div class="pick">' + opts + '</div>' +
       '<p class="hint">Find your series above. The lug area hasn\u2019t changed across Apple Watch generations, so any strap in your group fits \u2014 or check the case size printed on the back of your watch.</p></section>';
