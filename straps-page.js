@@ -47,6 +47,39 @@
   var DATA = null, LUGTBL = null;
   var state = { fit: null, size: null, style: null };
 
+  /* ---- history ----
+     Each step writes a hash, so the browser/Android back button walks back
+     through the steps instead of leaving the page. Landing on a deep hash
+     (a shared link) restores that step directly. */
+  function toHash(s) {
+    if (!s.fit) return "";
+    var p = ["fit=" + encodeURIComponent(s.fit)];
+    if (s.size) p.push("size=" + encodeURIComponent(s.size));
+    if (s.style) p.push("style=" + encodeURIComponent(s.style));
+    return "#" + p.join("&");
+  }
+  function fromHash() {
+    var h = (location.hash || "").replace(/^#/, "");
+    var out = { fit: null, size: null, style: null };
+    if (!h) return out;
+    h.split("&").forEach(function (kv) {
+      var i = kv.indexOf("=");
+      if (i < 0) return;
+      var k = kv.slice(0, i), v = decodeURIComponent(kv.slice(i + 1));
+      if (k === "fit" || k === "size" || k === "style") out[k] = v;
+    });
+    return out;
+  }
+  // Apply a state change and add a history entry for it.
+  function nav(patch) {
+    Object.keys(patch).forEach(function (k) { state[k] = patch[k]; });
+    var h = toHash(state);
+    try {
+      history.pushState({ hs: state }, "", h || location.pathname + location.search);
+    } catch (e) {}
+    render();
+  }
+
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
   function money(n) { return "\u20B9" + Math.round(n); }
