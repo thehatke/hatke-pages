@@ -447,7 +447,16 @@
       });
     }
     window.addEventListener("scroll", syncFloat, { passive: true });
-    window.addEventListener("resize", syncFloat, { passive: true });
+    window.addEventListener("resize", function () {
+      // Unpin first so the next syncFloat re-measures the slot at the new width.
+      var bar = document.querySelector("#hm .bar");
+      if (bar && bar.classList.contains("pinned")) {
+        bar.classList.remove("pinned");
+        bar.style.top = ""; bar.style.left = ""; bar.style.width = "";
+        if (barSpacer) barSpacer.style.display = "none";
+      }
+      syncFloat();
+    }, { passive: true });
 
     function applyModels(m) {
       MODELS = m;
