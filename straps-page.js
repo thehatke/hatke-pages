@@ -137,7 +137,9 @@
       '</div></section>';
   }
 
-  function chooseAppleSize() {
+  function backBar(target, label) {
+    return '<div class="navbar"><button class="back" data-back="' + target + '">\u2190 ' + esc(label) + '</button></div>';
+  }
     var opts = APPLE_SIZES.map(function (s) {
       var n = forApple(s.key).length;
       var series = (s.series || []).map(function (x) {
