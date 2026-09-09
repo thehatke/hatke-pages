@@ -213,7 +213,7 @@
     var banner = DATA.allDraft
       ? '<div class="banner">Preview \u2014 these straps aren\u2019t on sale yet. Layout and links are live for review.</div>' : "";
 
-    return '<button class="back" data-back="size">\u2190 Change size</button>' + banner +
+    return backBar("size", "Change size") + banner +
       '<section class="sec"><h2>' + esc(heading) + '</h2><div class="rule"></div>' + chips + body +
       '<p class="hint">Showing ' + list.length + ' of ' + all.length + ' straps</p></section>';
   }
