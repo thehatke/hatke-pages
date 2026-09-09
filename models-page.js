@@ -374,8 +374,16 @@
       '<div class="bar"><div class="flabel">Your phone</div><div class="sels"' + (LOCK ? ' style="grid-template-columns:1fr"' : '') + '>' + (LOCK ? '' : '<div class="sel"><select id="hmBrand" aria-label="Brand"></select></div>') + '<div class="sel"><select id="hmModel" aria-label="Model" class="empty"><option value="">Select model</option></select></div></div></div>' +
       '<div id="hmBody"><div class="note"><div class="spin"></div>Loading models\u2026</div></div>' +
       '<div class="index" id="hmIndex"></div></div>';
-    if (!LOCK) $("hmBrand").addEventListener("change", onBrand);
+    if (!LOCK) $("hmBrand").addEventListener("change", function () { navBrand($("hmBrand").value || null); });
     $("hmModel").addEventListener("change", onModel);
+    if (!LOCK) {
+      window.addEventListener("popstate", function () {
+        var b = brandFromHash();
+        $("hmBrand").value = b || "";
+        onBrand();
+      });
+      window.addEventListener("scroll", syncFloat, { passive: true });
+    }
 
     function applyModels(m) { MODELS = m; if (LOCK) { brand = LOCK; } else { renderBrandSelect(); } renderModelSelect(); renderGrid(); renderIndex(); }
     var quick = cached() || preloaded();
