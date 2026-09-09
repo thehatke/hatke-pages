@@ -1,0 +1,6 @@
+{
+  "_note": "Watch model -> strap (lug) width. Hand-maintained. b = brand, n = model, w = width and must match a strap-fit tag (18mm/19mm/20mm/22mm).",
+  "_todo": "Seeded empty on purpose — a guessed width ships the wrong strap. Fill from supplier specs or by measuring. Until rows exist the page falls back to 'check the back of your watch' plus the width picker, which works fine.",
+  "_example": [{ "b": "Noise", "n": "ColorFit Pro 4", "w": "22mm" }],
+  "watches": []
+}
