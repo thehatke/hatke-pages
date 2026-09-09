@@ -16,7 +16,23 @@
     { key: "42/44/45/46/49mm", label: "Large", sub: "42 \u00b7 44 \u00b7 45 \u00b7 46 \u00b7 49mm" },
     { key: "38/40/41mm", label: "Small", sub: "38 \u00b7 40 \u00b7 41mm" }
   ];
-  var LUGS = ["18mm", "19mm", "20mm", "22mm"];
+  // Non-Apple fit options come from the catalogue, so a fit with no products
+  // never shows and a new one (Mi Band, 18mm...) appears on its own.
+  var FIT_LABEL = { "mi-band": "Mi Band", "18mm": "18mm", "19mm": "19mm", "20mm": "20mm", "22mm": "22mm" };
+  function fitOptions() {
+    var seen = {}, out = [];
+    (DATA.products || []).forEach(function (p) {
+      if (!p.fit || p.fit === "apple" || seen[p.fit]) return;
+      seen[p.fit] = 1; out.push(p.fit);
+    });
+    return out.sort(function (a, b) {
+      var na = parseInt(a, 10), nb = parseInt(b, 10);
+      if (isNaN(na) && isNaN(nb)) return a.localeCompare(b);
+      if (isNaN(na)) return 1;
+      if (isNaN(nb)) return -1;
+      return na - nb;
+    });
+  }
 
   var DATA = null, LUGTBL = null;
   var state = { fit: null, size: null, style: null };
