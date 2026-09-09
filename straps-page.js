@@ -107,12 +107,19 @@
   function chooseAppleSize() {
     var opts = APPLE_SIZES.map(function (s) {
       var n = forApple(s.key).length;
-      return '<button class="opt" data-size="' + esc(s.key) + '"><span class="l">' + esc(s.label) + '</span><span class="s">' + esc(s.sub) + '</span><span class="s">' + n + ' straps \u203a</span></button>';
+      var series = (s.series || []).map(function (x) {
+        return '<span class="sr">' + esc(x) + '</span>';
+      }).join("");
+      return '<button class="opt tall" data-size="' + esc(s.key) + '">' +
+        '<span class="l">' + esc(s.label) + '</span>' +
+        '<span class="s">' + esc(s.sub) + '</span>' +
+        '<span class="srs">' + series + '</span>' +
+        '<span class="s">' + n + ' straps \u203a</span></button>';
     }).join("");
     return '<button class="back" data-back="fit">\u2190 Change watch</button>' +
-      '<section class="sec"><h2>What size is your Apple Watch?</h2><div class="rule"></div>' +
+      '<section class="sec"><h2>Which Apple Watch do you have?</h2><div class="rule"></div>' +
       '<div class="pick">' + opts + '</div>' +
-      '<p class="hint">Not sure? The case size is printed on the back of your watch.</p></section>';
+      '<p class="hint">Find your series above, or check the case size printed on the back of your watch.</p></section>';
   }
 
   function chooseOther() {
