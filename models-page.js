@@ -276,7 +276,7 @@
       }).join("") + '</div>';
       host.appendChild(sec);
       host.querySelectorAll(".bcard").forEach(function (a) {
-        a.addEventListener("click", function (e) { e.preventDefault(); $("hmBrand").value = a.getAttribute("data-brand"); onBrand(); });
+        a.addEventListener("click", function (e) { e.preventDefault(); navBrand(a.getAttribute("data-brand")); });
       });
       return;
     }
