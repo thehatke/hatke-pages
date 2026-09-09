@@ -137,6 +137,30 @@
       '</div></section>';
   }
 
+  // The floating back button lives on <body>, not inside the theme's content
+  // wrapper, because that wrapper clips/limits position:sticky.
+  var floatBtn = null;
+  function ensureFloat() {
+    if (floatBtn) return floatBtn;
+    floatBtn = document.createElement("button");
+    floatBtn.id = "hs-float";
+    floatBtn.type = "button";
+    floatBtn.innerHTML = "\u2190 Back";
+    floatBtn.addEventListener("click", function () {
+      if (window.history && history.length > 1) history.back();
+      else nav({ fit: null, size: null, style: null });
+    });
+    document.body.appendChild(floatBtn);
+    return floatBtn;
+  }
+  function syncFloat() {
+    var b = ensureFloat();
+    // show only past the first step, and only once the user has scrolled
+    var deep = !!state.fit;
+    var scrolled = (window.pageYOffset || document.documentElement.scrollTop || 0) > 220;
+    b.classList.toggle("on", deep && scrolled);
+  }
+
   function backBar(target, label) {
     return '<div class="navbar"><button class="back" data-back="' + target + '">\u2190 ' + esc(label) + '</button></div>';
   }
