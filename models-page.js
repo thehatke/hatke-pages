@@ -398,6 +398,11 @@
     // The bar stays inside #hm: every style rule is scoped to that id, so
     // relocating it to <body> strips its styling and it vanishes.
     if (!pinned && anchor < top) {
+      // Measure the slot BEFORE the bar leaves the flow, and cache it. Reading
+      // it every scroll frame let the value drift smaller and smaller.
+      var slot = bar.getBoundingClientRect();
+      pinLeft = Math.round(slot.left);
+      pinWidth = Math.round(slot.width);
       barSpacer.style.height = bar.offsetHeight + "px";
       barSpacer.style.display = "block";
       bar.classList.add("pinned");
@@ -411,10 +416,9 @@
       pinned = false;
     }
     if (pinned) {
-      var box = barSpacer.getBoundingClientRect();
       bar.style.top = top + "px";
-      bar.style.left = Math.round(box.left) + "px";
-      bar.style.width = Math.round(box.width) + "px";
+      bar.style.left = pinLeft + "px";
+      bar.style.width = pinWidth + "px";
     }
   }
 
