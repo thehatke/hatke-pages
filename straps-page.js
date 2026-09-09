@@ -106,9 +106,9 @@
   }
 
   function chooseOther() {
-    var lugOpts = LUGS.map(function (w) {
+    var lugOpts = fitOptions().map(function (w) {
       var n = forLug(w).length;
-      return '<button class="opt" data-lug="' + w + '"><span class="l">' + w + '</span><span class="s">' + n + ' straps \u203a</span></button>';
+      return '<button class="opt" data-lug="' + esc(w) + '"><span class="l">' + esc(FIT_LABEL[w] || w) + '</span><span class="s">' + n + ' straps \u203a</span></button>';
     }).join("");
     var hasTable = !!(LUGTBL && LUGTBL.watches && LUGTBL.watches.length);
     var searchBlock = hasTable
