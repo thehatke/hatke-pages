@@ -261,7 +261,7 @@
       return '<button data-w="' + esc(w.w) + '">' + esc((w.b ? w.b + " " : "") + w.n) + '<span class="w">' + esc(w.w) + '</span></button>';
     }).join("");
     box.querySelectorAll("[data-w]").forEach(function (b) {
-      b.addEventListener("click", function () { state.size = b.getAttribute("data-w"); state.style = null; render(); });
+      b.addEventListener("click", function () { nav({ size: b.getAttribute("data-w"), style: null }); });
     });
   }
 
