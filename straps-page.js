@@ -12,17 +12,17 @@
 (function () {
   var BASE = "https://cdn.jsdelivr.net/gh/thehatke/hatke-pages@main/";
 
-  // Series lists come from the mapping already maintained on /pages/straps-preview.
-  // NOTE 42mm appears in BOTH bands: Series 1-3 at 42mm take the large strap,
-  // but Series 10 at 42mm takes the small one. The series list is what actually
-  // disambiguates that, which is why it is shown.
+  // Two band groups. Named after the NEWEST case sizes (Nomad's convention)
+  // rather than listing every number, because 42mm belongs to BOTH groups:
+  // Series 1-3 at 42mm takes the large band, Series 10 at 42mm takes the small.
+  // The series list below is what actually resolves that for a customer.
   var APPLE_SIZES = [
     {
-      key: "42/44/45/46/49mm", label: "Large", sub: "42 \u00b7 44 \u00b7 45 \u00b7 46 \u00b7 49mm",
+      key: "42/44/45/46/49mm", label: "46mm / Ultra", sub: "Fits 49 \u00b7 46 \u00b7 45 \u00b7 44mm, and 42mm on Series 1\u20133",
       series: ["Ultra & Ultra 2 (49mm)", "Series 10 (46mm)", "Series 9, 8, 7 (45mm)", "SE, Series 6, 5, 4 (44mm)", "Series 3, 2, 1 (42mm)"]
     },
     {
-      key: "38/40/41mm", label: "Small", sub: "38 \u00b7 40 \u00b7 41mm",
+      key: "38/40/41mm", label: "42mm / 41mm", sub: "Fits 42mm on Series 10, and 41 \u00b7 40 \u00b7 38mm",
       series: ["Series 10 (42mm)", "Series 9, 8, 7 (41mm)", "SE, Series 6, 5, 4 (40mm)", "Series 3, 2, 1 (38mm)"]
     }
   ];
