@@ -309,8 +309,50 @@
     document.head.appendChild(s);
   }
 
-  function onBrand() { brand = $("hmBrand").value || null; $("hmBrand").classList.toggle("empty", !brand); renderModelSelect(); renderGrid(); if (brand) { pruneBrand(brand); try { $("hmBody").scrollIntoView({ block: "start" }); } catch (e) {} } }
+  function onBrand() { brand = $("hmBrand").value || null; $("hmBrand").classList.toggle("empty", !brand); renderModelSelect(); renderGrid(); syncFloat(); if (brand) { pruneBrand(brand); try { $("hmBody").scrollIntoView({ block: "start" }); } catch (e) {} } }
   function onModel() { var v = $("hmModel").value; if (v) location.href = v; }
+
+  /* ---- history ----
+     Selecting a brand swaps the page content with JS. Without a history entry
+     the browser back button leaves the page entirely, skipping the brand grid.
+     A hash per brand makes back walk the steps, and makes a brand link shareable. */
+  function brandFromHash() {
+    var h = (location.hash || "").replace(/^#/, "");
+    if (h.indexOf("brand=") !== 0) return null;
+    var v = decodeURIComponent(h.slice(6));
+    return v || null;
+  }
+  function navBrand(b) {
+    try {
+      history.pushState({ hmBrand: b || null }, "",
+        b ? "#brand=" + encodeURIComponent(b) : location.pathname + location.search);
+    } catch (e) {}
+    $("hmBrand").value = b || "";
+    onBrand();
+  }
+
+  /* Floating back button. Mounted on <body> rather than inside the theme's
+     content wrapper, which clips position:sticky. */
+  var floatBtn = null;
+  function ensureFloat() {
+    if (floatBtn) return floatBtn;
+    floatBtn = document.createElement("button");
+    floatBtn.id = "hm-float";
+    floatBtn.type = "button";
+    floatBtn.innerHTML = "\u2190 All brands";
+    floatBtn.addEventListener("click", function () {
+      if (window.history && history.length > 1) history.back();
+      else navBrand(null);
+    });
+    document.body.appendChild(floatBtn);
+    return floatBtn;
+  }
+  function syncFloat() {
+    if (LOCK) return;
+    var b = ensureFloat();
+    var scrolled = (window.pageYOffset || document.documentElement.scrollTop || 0) > 220;
+    b.classList.toggle("on", !!brand && scrolled);
+  }
 
   function start() {
     var root = document.getElementById("hatke-models-root");
