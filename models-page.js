@@ -355,10 +355,28 @@
     document.body.appendChild(floatBtn);
     return floatBtn;
   }
+  // Park the pill just below whatever the theme has pinned to the top
+  // (announcement bar + header). Measured live, since that height changes
+  // between scroll states and breakpoints.
+  function headerBottom() {
+    var sels = ["#shopify-section-header", ".site-header", "header.site-header", "#SiteHeader", "header"];
+    var low = 0;
+    for (var i = 0; i < sels.length; i++) {
+      var el = document.querySelector(sels[i]);
+      if (!el) continue;
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== "fixed" && cs.position !== "sticky") continue;
+      var r = el.getBoundingClientRect();
+      if (r.bottom > low) low = r.bottom;
+    }
+    return low;
+  }
   function syncFloat() {
     var b = ensureFloat();
     var scrolled = (window.pageYOffset || document.documentElement.scrollTop || 0) > 220;
-    b.classList.toggle("on", (!!brand || !!LOCK) && scrolled);
+    var show = (!!brand || !!LOCK) && scrolled;
+    b.classList.toggle("on", show);
+    if (show) b.style.top = Math.max(12, Math.round(headerBottom()) + 10) + "px";
   }
 
   function start() {
