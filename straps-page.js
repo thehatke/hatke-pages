@@ -251,6 +251,7 @@
     else html += results();
     host.innerHTML = html;
     wire();
+    syncFloat();
   }
 
   function wire() {
