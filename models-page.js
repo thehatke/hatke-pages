@@ -439,6 +439,7 @@
       });
     }
     window.addEventListener("scroll", syncFloat, { passive: true });
+    window.addEventListener("resize", syncFloat, { passive: true });
 
     function applyModels(m) {
       MODELS = m;
