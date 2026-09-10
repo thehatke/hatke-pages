@@ -48,7 +48,7 @@
   }
   function gen(l, b) { var n = l.match(/\d+/g); if (!n) { if (/\bx\b|xs|xr/i.test(l)) return 10; if (/\bse\b/i.test(l)) return 0; return b === "Apple" ? 999 : 0; } var v = parseInt(n[0], 10); if (/^a\d/i.test(l)) v = v / 2.2; if (v > 100) v = v / 10; return v; }
   function rank(l) { l = l.toLowerCase(); if (/pro\s*max|ultra/.test(l)) return 4; if (/\bpro\b|\bxl\b/.test(l)) return 3; if (/plus|\+/.test(l)) return 2; if (/mini|\bfe\b|lite|\be\b/.test(l)) return -1; return 0; }
-  function fullName(m) { return m.brand === "Apple" ? m.label : m.brand + " " + m.label; }
+  function fullName(m) { return (m.brand === "Apple" || m.brand === "Tablets") ? m.label : m.brand + " " + m.label; }
 
   var SERIES_ORDER = {
     "Samsung": ["s", "z fold", "fold", "z flip", "flip", "note", "a", "m", "f"],
