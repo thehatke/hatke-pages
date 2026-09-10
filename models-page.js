@@ -11,7 +11,9 @@
   var PROBE = 12, CONC = 2;
   var STOCK_KEY = "b3stock2";
 
-  var BRANDS = [[/iqoo/, "iQOO"], [/iphone|apple/, "Apple"], [/samsung|galaxy/, "Samsung"], [/oneplus/, "OnePlus"], [/pixel|google/, "Google"], [/motorola|moto /, "Motorola"], [/nothing|cmf/, "Nothing"], [/oppo/, "Oppo"], [/vivo/, "Vivo"], [/redmi|xiaomi|poco/, "Xiaomi"], [/realme/, "Realme"], [/infinix/, "Infinix"], [/tecno/, "Tecno"], [/honor/, "Honor"], [/lava/, "Lava"]];
+  /* Tablets first: an iPad/Galaxy Tab title also matches apple/galaxy below,
+     so it has to win before those patterns get a look. */
+  var BRANDS = [[/ipad|galaxy tab|\btab\b/, "Tablets"], [/iqoo/, "iQOO"], [/iphone|apple/, "Apple"], [/samsung|galaxy/, "Samsung"], [/oneplus/, "OnePlus"], [/pixel|google/, "Google"], [/motorola|moto /, "Motorola"], [/nothing|cmf/, "Nothing"], [/oppo/, "Oppo"], [/vivo/, "Vivo"], [/redmi|xiaomi|poco/, "Xiaomi"], [/realme/, "Realme"], [/infinix/, "Infinix"], [/tecno/, "Tecno"], [/honor/, "Honor"], [/lava/, "Lava"]];
   var ORDER = ["Apple", "Samsung", "OnePlus", "Google", "Motorola", "Nothing", "Oppo", "Vivo", "Xiaomi", "Realme", "iQOO", "Infinix", "Tecno", "Honor", "Lava"];
   var SKIP = /watch|iwatch|strap|airpod|buds|wallet|charger|cable|lens|mask|stand|poster|earbud|protector|printed case|spritual|accessor|bestseller|best selling|new products|home page|discount eligible|all cases|magsafe|combo|signature|\d+mm|encho|enco|selling products|bundle/i;
   var NOISE = /\b(cases|case|covers|cover|mobile|original|printed|spritual|spiritual|back|premium|new|for|the|and|shockproof|silicone|phone|phones)\b/gi;
