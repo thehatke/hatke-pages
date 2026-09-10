@@ -408,6 +408,10 @@
       pinLeft = Math.round(slot.left);
       pinWidth = Math.round(slot.width);
       barSpacer.style.height = bar.offsetHeight + "px";
+      // Width too: the spacer has to hold the container open. A 1fr grid has no
+      // intrinsic width, so without this the container shrinks to card min-content.
+      barSpacer.style.width = pinWidth + "px";
+      barSpacer.style.maxWidth = "100%";
       barSpacer.style.display = "block";
       bar.classList.add("pinned");
       pinned = true;
