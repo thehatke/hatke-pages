@@ -18,7 +18,7 @@
   var SKIP = /watch|iwatch|strap|airpod|buds|wallet|charger|cable|lens|mask|stand|poster|earbud|protector|printed case|spritual|accessor|bestseller|best selling|new products|home page|discount eligible|all cases|magsafe|combo|signature|\d+mm|encho|enco|selling products|bundle/i;
   var NOISE = /\b(cases|case|covers|cover|mobile|original|printed|spritual|spiritual|back|premium|new|for|the|and|shockproof|silicone|phone|phones)\b/gi;
   var BAD = /^(apple|samsung|oneplus|google|motorola|nothing|oppo|vivo|xiaomi|redmi|realme|iqoo|infinix|tecno|honor|lava|cmf|poco|galaxy|series|all|other|others)$/i;
-  var KEEP = ["pro", "max", "air", "mini", "plus", "ultra", "neo", "lite", "fold", "flip", "note", "play", "hot", "edge", "nord", "pixel", "galaxy", "stylus", "fusion", "open"];
+  var KEEP = ["pro", "max", "air", "mini", "plus", "ultra", "neo", "lite", "fold", "flip", "note", "play", "hot", "edge", "nord", "pixel", "galaxy", "stylus", "fusion", "open", "tab"];
   var EXCLUDE = ["accessories", "screen guard", "lens", "metallic camera ring", "metal camera ring", "apple charger", "charging lightning adapter", "posters"];
   var NOTCASE = /screen protector|camera lens|lens guard|charging|charger|earphone|cable|sticky mobile wallet|dust protector|waterproof mobile cover|tempered|glass/i;
 
