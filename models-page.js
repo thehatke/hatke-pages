@@ -433,6 +433,13 @@
   function start() {
     var root = document.getElementById("hatke-models-root");
     if (!root) return;
+    // The static index (written into the page body by static-index.js in
+    // shopify-tools) is there only for crawlers that don't run JS. We're running,
+    // so drop it before rendering — otherwise it shows alongside the live index.
+    try {
+      var stale = document.getElementById("hm-static-index");
+      if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+    } catch (e) {}
     var f = document.createElement("link");
     f.rel = "stylesheet";
     f.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap";
