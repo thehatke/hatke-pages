@@ -39,7 +39,7 @@
     s = " " + s + " ";
     s = s.replace(/[\-\u2013\u2014]/g, " ").replace(NOISE, " ");
     if (b === "Apple") s = s.replace(/\bapple\b/gi, " ");
-    else if (b === "Tablets") s = s.replace(/\b(apple|samsung)\b/gi, " ");
+    else if (b === "Tablets") s = s.replace(/\b(apple|samsung|oneplus|xiaomi|redmi|realme|mi)\b/gi, " ");
     else s = s.replace(new RegExp("\\b" + b + "\\b", "gi"), " ");
     s = s.replace(/[&,+]+/g, " ").replace(/\s{2,}/g, " ").trim();
     if (!s || BAD.test(s)) return "";
