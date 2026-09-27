@@ -43,7 +43,7 @@
     else s = s.replace(new RegExp("\\b" + b + "\\b", "gi"), " ");
     s = s.replace(/[&,+]+/g, " ").replace(/\s{2,}/g, " ").trim();
     if (!s || BAD.test(s)) return "";
-    if (!/\d/.test(s) && s.split(" ").length < 2 && b !== "Apple") return "";
+    if (!/\d/.test(s) && s.split(" ").length < 2 && b !== "Apple" && KEEP.indexOf(s.toLowerCase()) < 0) return "";
     return s.split(" ").map(tcase).join(" ");
   }
   function gen(l, b) { var n = l.match(/\d+/g); if (!n) { if (/\bx\b|xs|xr/i.test(l)) return 10; if (/\bse\b/i.test(l)) return 0; return b === "Apple" ? 999 : 0; } var v = parseInt(n[0], 10); if (/^a\d/i.test(l)) v = v / 2.2; if (v > 100) v = v / 10; return v; }
