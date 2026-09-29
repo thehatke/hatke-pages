@@ -81,9 +81,10 @@
     var model = modelOf(item.product_title || item.title);
     btn.disabled = true;
     btn.textContent = "Adding\u2026";
-    var props = { "_combo": combo.tag || "anti-yellow" };
+    var props = {};
     if (model) props["Phone model"] = model;
-    props["Includes"] = GIFTS.join(", ");
+    props["_combo"] = combo.tag || "anti-yellow";
+    props["_includes"] = GIFTS.join(", ");
 
     /* remove the standalone case FIRST — line keys shift after an add */
     fetch("/cart/change.js", {
