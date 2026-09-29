@@ -217,7 +217,7 @@
         ["invisi", "magsafe"].forEach(function (ty) {
           var o = m.opts && m.opts[ty];
           if (!o || i > 150) return;
-          items.push({ "@type": "ListItem", position: i++, name: (ty === "magsafe" ? "Anti-Yellow MagSafe Case for " : "Invisi Anti-Yellow Case for ") + (b === "Apple" ? m.label : b + " " + m.label), url: location.origin + "/products/" + o.handle });
+          items.push({ "@type": "ListItem", position: i++, name: "Anti-Yellow Case " + (ty === "magsafe" ? "with MagSafe" : "without MagSafe") + " for " + (b === "Apple" ? m.label : b + " " + m.label), url: location.origin + "/products/" + o.handle });
         });
       });
     });
