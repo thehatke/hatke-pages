@@ -164,13 +164,13 @@
     root.innerHTML =
       '<div class="wrap">' +
       '<div class="tick">\u2713 CASE ADDED TO CART</div>' +
-      '<div class="head"><h1>Add 5 gifts for ' + inr(PRICE) + '</h1>' +
+      '<div class="head"><h1>Add 5 gifts to your case</h1>' +
       '<p class="sub">Everything your phone needs, matched to your model \u2014 in one box.</p></div>' +
       '<div id="hkofBody"><div class="note"><div class="spin"></div>Checking your cart\u2026</div></div>' +
       '<div class="trust">10% off on prepaid \u00b7 Free COD \u00b7 Easy returns</div>' +
       '</div>';
 
-    if (!VARIANT) { $("hkofBody").innerHTML = '<div class="note">Offer not configured.</div>'; return; }
+    if (!Object.keys(COMBOS).length) { $("hkofBody").innerHTML = '<div class="note">Offer not configured.</div>'; return; }
     getCart().then(render).catch(function () {
       $("hkofBody").innerHTML = '<div class="note">Couldn\u2019t read your cart. Please refresh.</div>';
     });
