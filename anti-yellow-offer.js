@@ -1,23 +1,21 @@
-/* The Hatke — anti-yellow post-add offer page (v2: add-on, no swap).
-   Reads the cart, finds the anti-yellow case, and offers the "6-in-1 Gift Pack"
-   as a separate line. The case line stays untouched, so the phone model keeps
-   showing in Shiprocket Smart Cart (which does not render line properties).
+/* The Hatke — anti-yellow post-add offer page (v3: one combo line per model).
+   Reads the cart, finds the anti-yellow case, and swaps it for the matching
+   model variant of the combo product (case + 6 essentials) in one tap.
+   The cart line reads e.g. "Anti-Yellow MagSafe Case + 6 Essentials Combo - Vivo V30",
+   so the model shows in Shiprocket Smart Cart and there is no separate add-on
+   line that could be left behind.
 
-   Pricing: combo total = 599 (no MagSafe) / 699 (MagSafe). The gift pack is
-   picked by price so case + pack always lands on the combo total:
-     case 299 + pack 300 = 599    MagSafe 399 + 300 = 699
-     MagSafe 349 + 350 = 699      MagSafe 299 + 400 = 699
-   A case priced outside this grid gets no offer (never a wrong total).
+   Combo products: anti-yellow-combo-599 (no MagSafe), anti-yellow-magsafe-combo-699.
+   Their "Phone Model" variants are matched against the model in the case title.
+   A case with no matching (available) combo variant gets no offer.
 
    Mount: <div id="hatke-offer-root"></div>
-   Optional window.OFFER_CONFIG overrides the defaults below.
+   Optional window.OFFER_CONFIG = { image: "...", combos: { invisi: "handle", magsafe: "handle" } }
 */
 (function () {
   var D = {
     match: "anti yellow",
-    combo: { invisi: { price: 599, compareAt: 1099 }, magsafe: { price: 699, compareAt: 1299 } },
-    packs: { "300": 67581784817827, "350": 67581785768099, "400": 67581786456227 },
-    packHandle: "6-in-1-gift-pack",
+    combos: { invisi: "anti-yellow-combo-599", magsafe: "anti-yellow-magsafe-combo-699" },
     image: "",
     gifts: [
       ["Sticky Pod", "strong grip, sticks anywhere"],
@@ -30,10 +28,10 @@
   };
   var C = window.OFFER_CONFIG || {};
   var MATCH = String(C.match || D.match).toLowerCase();
-  var COMBO = C.combo || D.combo;
-  var PACKS = C.packs || D.packs;
+  var HANDLES = C.combos || D.combos;
   var GIFTS = C.gifts || D.gifts;
-  var PACK_IDS = Object.keys(PACKS).map(function (k) { return String(PACKS[k]); });
+  var PRODUCTS = {};
+  var COMBO_IDS = [];
 
   var $ = function (i) { return document.getElementById(i); };
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
@@ -43,6 +41,7 @@
     var m = String(title).split(/\bfor\b/i);
     return m.length > 1 ? m[m.length - 1].replace(/\(.*?\)/g, "").trim() : "";
   }
+  function norm(m) { return String(m || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   function sized(url, w) { return String(url).replace(/(\.[a-z]+)(\?|$)/i, "_" + w + "x$1$2"); }
 
   var CSS = "#hkof{--muted:#6b6b6b;--line:#e5e5e5;--go:#0d9065;--hot:#f26a1b;font-family:'Montserrat',sans-serif;font-weight:600;color:#000}#hkof *{box-sizing:border-box;margin:0;padding:0}#hkof h1{font-family:'Poppins',sans-serif;font-weight:500}#hkof .wrap{max-width:620px;margin:0 auto;padding:0 0 34px}"
@@ -63,25 +62,31 @@
 
   function getJSON(u) { return fetch(u, { headers: { "Accept": "application/json" } }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
 
-  /* hero image: config override, else the gift pack product's own photo */
+  function loadCombos() {
+    return Promise.all(Object.keys(HANDLES).map(function (t) {
+      return getJSON("/products/" + HANDLES[t] + ".js").then(function (p) {
+        PRODUCTS[t] = p;
+        (p.variants || []).forEach(function (v) { COMBO_IDS.push(String(v.id)); });
+      }).catch(function () {});
+    }));
+  }
   function heroImage() {
-    if (C.image || D.image) return Promise.resolve(C.image || D.image);
-    return getJSON("/products/" + (C.packHandle || D.packHandle) + ".js")
-      .then(function (p) { return p && p.featured_image ? p.featured_image : ""; })
-      .catch(function () { return ""; });
+    if (C.image || D.image) return C.image || D.image;
+    for (var t in PRODUCTS) if (PRODUCTS[t] && PRODUCTS[t].featured_image) return PRODUCTS[t].featured_image;
+    return "";
   }
 
   function findCase(cart) {
     var items = (cart && cart.items) || [];
     for (var i = 0; i < items.length; i++) {
-      if (PACK_IDS.indexOf(String(items[i].variant_id)) > -1) continue;
+      if (COMBO_IDS.indexOf(String(items[i].variant_id)) > -1) continue;
       var t = (items[i].product_title || items[i].title || "").toLowerCase();
       if (t.indexOf(MATCH) > -1) return items[i];
     }
     return null;
   }
-  function hasPack(cart) {
-    return ((cart && cart.items) || []).some(function (it) { return PACK_IDS.indexOf(String(it.variant_id)) > -1; });
+  function hasCombo(cart) {
+    return ((cart && cart.items) || []).some(function (it) { return COMBO_IDS.indexOf(String(it.variant_id)) > -1; });
   }
 
   function goCart() {
@@ -89,43 +94,58 @@
     location.href = "/cart";
   }
 
-  function addPack(item, deal, btn) {
+  function dealFor(item) {
+    var type = typeOf(item.product_title || item.title);
+    var p = PRODUCTS[type];
+    if (!p) return null;
+    var model = norm(modelOf(item.product_title || item.title));
+    if (!model) return null;
+    var vs = (p.variants || []).filter(function (v) { return v.available !== false; });
+    var v = vs.filter(function (x) { return norm(x.title) === model; })[0] ||
+      vs.filter(function (x) {
+        var t = norm(x.title);
+        return t.slice(-(model.length + 1)) === " " + model || model.slice(-(t.length + 1)) === " " + t;
+      })[0];
+    if (!v) return null;
+    var unit = (item.original_price != null ? item.original_price : item.price) / 100;
+    var total = v.price / 100;
+    if (total <= unit) return null;
+    return { type: type, total: total, compareAt: (v.compare_at_price || v.price) / 100, topup: Math.round(total - unit), variant: v.id };
+  }
+
+  function swap(item, deal, btn) {
     btn.disabled = true;
     btn.textContent = "Adding\u2026";
-    var props = { "_for": modelOf(item.product_title || item.title) || (item.product_title || ""), "_combo": "anti-yellow-" + deal.type + "-" + deal.total };
-    fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: Number(deal.variant), quantity: item.quantity || 1, properties: props })
-    })
+    var qty = item.quantity || 1;
+    function post(u, b) { return fetch(u, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) }); }
+    /* remove the standalone case FIRST - line keys shift after an add */
+    post("/cart/change.js", { id: String(item.key), quantity: 0 })
       .then(function (r) {
-        if (!r.ok) return r.text().then(function (t) { throw new Error("add " + r.status + " " + t.slice(0, 140)); });
-        return r.json();
+        if (!r.ok) throw new Error("remove " + r.status);
+        return post("/cart/add.js", { id: Number(deal.variant), quantity: qty, properties: { "_combo": "anti-yellow-" + deal.type } });
+      })
+      .then(function (r) {
+        if (r.ok) return r.json();
+        /* add failed: put the case back so the customer never loses it */
+        return r.text().then(function (t) {
+          return post("/cart/add.js", { id: Number(item.variant_id), quantity: qty })
+            .then(function () { throw new Error("add " + r.status + " " + t.slice(0, 140)); });
+        });
       })
       .then(function () { btn.textContent = "Added \u2713"; setTimeout(goCart, 400); })
       .catch(function (e) {
         btn.disabled = false;
-        btn.textContent = "Add all 6 \u2014 " + inr(deal.total);
+        btn.textContent = "Get the combo \u2014 " + inr(deal.total);
         var d = $("hkofErr");
         if (d) { d.style.display = "block"; d.textContent = "Couldn\u2019t add: " + (e && e.message ? e.message : "unknown error"); }
       });
   }
 
-  function dealFor(item) {
-    var type = typeOf(item.product_title || item.title);
-    var c = COMBO[type];
-    if (!c) return null;
-    var unit = (item.original_price != null ? item.original_price : item.price) / 100;
-    var top = Math.round(c.price - unit);
-    var v = PACKS[String(top)];
-    if (!v) return null;
-    return { type: type, total: c.price, compareAt: c.compareAt, topup: top, variant: v };
-  }
-
-  function render(cart, img) {
+  function render(cart) {
     var host = $("hkofBody");
-    if (hasPack(cart)) {
-      host.innerHTML = '<div class="note">The gift pack is already in your cart.<br><a href="#" id="hkofGo">Go to cart \u2192</a></div>';
+    var img = heroImage();
+    if (hasCombo(cart)) {
+      host.innerHTML = '<div class="note">The combo is already in your cart.<br><a href="#" id="hkofGo">Go to cart \u2192</a></div>';
       $("hkofGo").addEventListener("click", function (e) { e.preventDefault(); goCart(); });
       return;
     }
@@ -160,13 +180,13 @@
       '</ul>' +
       '<div class="pricebox">' +
       '<div class="pr"><span class="p">' + inr(deal.total) + '</span><span class="m2">' + inr(deal.compareAt) + '</span><span class="s">' + off + '% OFF</span></div>' +
-      '<div class="youpay">Case + all 6 essentials \u00b7 just ' + inr(deal.topup) + ' more' + (qty > 1 ? ' per case (\u00d7' + qty + ')' : '') + '</div>' +
+      '<div class="youpay">Case + all 6 essentials \u00b7 just ' + inr(deal.topup) + ' more than the case' + (qty > 1 ? ' per case (\u00d7' + qty + ')' : '') + '</div>' +
       '</div></div>' +
       '<a class="skip" id="hkofSkip">No thanks, just the case</a>' +
       '<div class="errline" id="hkofErr" style="display:none"></div>' +
-      '<div class="stick"><button type="button" class="cta" id="hkofCta">Add all 6 \u2014 ' + inr(deal.total) + '</button></div>';
+      '<div class="stick"><button type="button" class="cta" id="hkofCta">Get the combo \u2014 ' + inr(deal.total) + '</button></div>';
 
-    $("hkofCta").addEventListener("click", function () { addPack(item, deal, this); });
+    $("hkofCta").addEventListener("click", function () { swap(item, deal, this); });
     $("hkofSkip").addEventListener("click", function (e) { e.preventDefault(); goCart(); });
   }
 
@@ -190,8 +210,9 @@
       '<div class="trust">10% off on prepaid \u00b7 Free COD \u00b7 Easy returns</div>' +
       '</div>';
 
-    Promise.all([getJSON("/cart.js"), heroImage()])
-      .then(function (r) { render(r[0], r[1]); })
+    loadCombos()
+      .then(function () { return getJSON("/cart.js"); })
+      .then(render)
       .catch(function () { $("hkofBody").innerHTML = '<div class="note">Couldn\u2019t read your cart. Please refresh.</div>'; });
   }
 
