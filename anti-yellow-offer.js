@@ -136,9 +136,10 @@
 
     host.innerHTML =
       '<div class="card">' +
-      (item.image ? '<div class="shot"><img src="' + esc(String(item.image).replace(/(\.[a-z]+)(\?|$)/i, "_600x$1$2")) + '" alt="' + esc(item.product_title || item.title) + '"><span class="gcount">+ ' + GIFTS.length + ' free gifts</span></div>' : '') +
-      '<div class="cardtop"><div class="k">' + esc(item.product_title || item.title) + '</div>' +
-      (model ? '<div class="m">For ' + esc(model) + '</div>' : '') + '</div>' +
+      '<div class="cardtop">' +
+      (item.image ? '<img class="thumb" src="' + esc(String(item.image).replace(/(\.[a-z]+)(\?|$)/i, "_200x$1$2")) + '" alt="' + esc(item.product_title || item.title) + '">' : '') +
+      '<div class="ct"><div class="k">' + esc(item.product_title || item.title) + '</div>' +
+      (model ? '<div class="m">For ' + esc(model) + '</div>' : '') + '</div></div>' +
       '<ul class="gifts">' +
       '<li><i>\u2713</i><span><b>Your anti-yellow case</b> \u2014 already chosen</span></li>' +
       GIFTS.map(function (g) { return '<li><i>+</i><span><b>' + esc(g) + '</b> free</span></li>'; }).join("") +
@@ -146,9 +147,9 @@
       '<div class="pricebox">' +
       '<div class="pr"><span class="p">' + inr(combo.price) + '</span><span class="m2">' + inr(combo.compareAt) + '</span><span class="s">' + off + '% OFF</span></div>' +
       '<div class="youpay">' + (extra > 0 ? "Just " + inr(extra) + " more than the case alone" : "Same price \u2014 gifts on us") + '</div>' +
-      '<button type="button" class="cta" id="hkofCta">Add combo \u2014 ' + inr(combo.price) + '</button>' +
+      '</div></div>' +
       '<a class="skip" id="hkofSkip">No thanks, just the case</a>' +
-      '</div></div>';
+      '<div class="stick"><button type="button" class="cta" id="hkofCta">Add combo \u2014 ' + inr(combo.price) + '</button></div>';
 
     $("hkofCta").addEventListener("click", function () { upgrade(item, combo, this); });
     $("hkofSkip").addEventListener("click", function (e) { e.preventDefault(); goCart(); });
