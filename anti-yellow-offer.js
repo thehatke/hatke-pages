@@ -77,18 +77,18 @@
     if (best) best.click(); else location.href = "/cart";
   }
 
-  function upgrade(item, btn) {
+  function upgrade(item, combo, btn) {
     var model = modelOf(item.product_title || item.title);
     btn.disabled = true;
     btn.textContent = "Adding\u2026";
-    var props = { "_combo": "anti-yellow-599" };
+    var props = { "_combo": combo.tag || "anti-yellow" };
     if (model) props["Phone model"] = model;
     props["Includes"] = GIFTS.join(", ");
 
     fetch("/cart/add.js", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: Number(VARIANT), quantity: 1, properties: props })
+      body: JSON.stringify({ id: Number(combo.variant), quantity: 1, properties: props })
     })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function () {
