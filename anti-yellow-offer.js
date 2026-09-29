@@ -47,6 +47,7 @@
     + "#hkof .skip{display:block;text-align:center;margin:14px 0 4px;font-size:12.5px;color:var(--muted);font-weight:600;text-decoration:underline;cursor:pointer}"
     + "#hkof .note{border:1px dashed #c9c9c9;padding:24px 16px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;line-height:1.6}#hkof .note a{color:#000}"
     + "#hkof .spin{width:24px;height:24px;border:3px solid #e5e5e5;border-top-color:#000;border-radius:50%;margin:0 auto 10px;animation:hkofspin .8s linear infinite}@keyframes hkofspin{to{transform:rotate(360deg)}}"
+    + "#hkof .errline{margin:8px 0 2px;padding:9px 12px;background:#fdf2f0;border:1px solid #f0c8c0;color:#a13b28;font-size:12px;font-weight:600;line-height:1.4;text-align:center}"
     + "#hkof .trust{margin-top:16px;text-align:center;font-size:11.5px;color:var(--muted);font-weight:600}";
 
   function getCart() {
