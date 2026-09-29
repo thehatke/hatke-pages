@@ -97,13 +97,14 @@
       (m[o.brand] = m[o.brand] || []).push(o);
     });
     Object.keys(m).forEach(function (b) {
+      m[b] = m[b].filter(function (o) { return o.avail; });
       m[b].sort(function (a, c) {
-        if (a.avail !== c.avail) return a.avail ? -1 : 1;
         if (c.g !== a.g) return c.g - a.g;
         if (c.r !== a.r) return c.r - a.r;
         return a.label.localeCompare(c.label);
       });
     });
+    Object.keys(m).forEach(function (b) { if (!m[b].length) delete m[b]; });
     return m;
   }
   function notEmpty(m) { return m && Object.keys(m).some(function (b) { return m[b] && m[b].length; }); }
