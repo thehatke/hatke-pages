@@ -67,7 +67,15 @@
     return ((cart && cart.items) || []).some(function (it) { return ids.indexOf(String(it.variant_id)) > -1; });
   }
 
-  function goCart() { location.href = "/cart"; }
+  function goCart() {
+    try {
+      if (typeof window.slideShiprocketSmartCartInFrame === "function") {
+        window.slideShiprocketSmartCartInFrame();
+        return;
+      }
+    } catch (e) {}
+    location.href = "/cart";
+  }
 
   function upgrade(item, combo, btn) {
     var model = modelOf(item.product_title || item.title);
