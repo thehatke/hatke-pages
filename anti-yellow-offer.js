@@ -121,10 +121,16 @@
       host.innerHTML = '<div class="note">No anti-yellow case in your cart yet.<br><a href="/pages/anti-yellow">Pick your phone \u2192</a></div>';
       return;
     }
+    var combo = comboFor(item);
+    if (!combo) {
+      host.innerHTML = '<div class="note">This offer isn\u2019t available for that case.<br><a href="#" id="hkofGo2">Go to cart \u2192</a></div>';
+      $("hkofGo2").addEventListener("click", function (e) { e.preventDefault(); goCart(); });
+      return;
+    }
     var model = modelOf(item.product_title || item.title);
     var paid = (item.final_line_price || item.line_price || 0) / 100;
-    var extra = Math.max(0, PRICE - paid);
-    var off = Math.round((MRP - PRICE) * 100 / MRP);
+    var extra = Math.max(0, combo.price - paid);
+    var off = Math.round((combo.compareAt - combo.price) * 100 / combo.compareAt);
 
     host.innerHTML =
       '<div class="card">' +
@@ -135,13 +141,13 @@
       GIFTS.map(function (g) { return '<li><i>+</i><span><b>' + esc(g) + '</b> free</span></li>'; }).join("") +
       '</ul>' +
       '<div class="pricebox">' +
-      '<div class="pr"><span class="p">' + inr(PRICE) + '</span><span class="m2">' + inr(MRP) + '</span><span class="s">' + off + '% OFF</span></div>' +
+      '<div class="pr"><span class="p">' + inr(combo.price) + '</span><span class="m2">' + inr(combo.compareAt) + '</span><span class="s">' + off + '% OFF</span></div>' +
       '<div class="youpay">' + (extra > 0 ? "Just " + inr(extra) + " more than the case alone" : "Same price \u2014 gifts on us") + '</div>' +
-      '<button type="button" class="cta" id="hkofCta">Add combo \u2014 ' + inr(PRICE) + '</button>' +
+      '<button type="button" class="cta" id="hkofCta">Add combo \u2014 ' + inr(combo.price) + '</button>' +
       '<a class="skip" id="hkofSkip">No thanks, just the case</a>' +
       '</div></div>';
 
-    $("hkofCta").addEventListener("click", function () { upgrade(item, this); });
+    $("hkofCta").addEventListener("click", function () { upgrade(item, combo, this); });
     $("hkofSkip").addEventListener("click", function (e) { e.preventDefault(); goCart(); });
   }
 
