@@ -66,6 +66,8 @@
   function gen(l) { var m = l.match(/\d+/); return m ? parseInt(m[0], 10) : 0; }
   function rank(l) { l = l.toLowerCase(); if (/pro\s*max|ultra/.test(l)) return 4; if (/\bpro\b|\bxl\b/.test(l)) return 3; if (/plus/.test(l)) return 2; if (/mini|\bfe\b|lite|\be\b/.test(l)) return -1; return 0; }
 
+  function typeOf(title) { return /magsafe|mag safe/i.test(title) ? "magsafe" : "invisi"; }
+
   function ingest(list, out) {
     list.forEach(function (p) {
       var t = p.title || "";
@@ -75,17 +77,23 @@
       if (!lab || lab.length > 28) return;
       var avail = (p.variants || []).some(function (v) { return v.available; });
       var price = (p.variants && p.variants[0] && p.variants[0].price) || null;
+      var ty = typeOf(t);
       var key = b + "|" + lab.toLowerCase().replace(/[^a-z0-9]/g, "");
-      var prev = out[key];
-      /* prefer an in-stock listing over an out-of-stock duplicate */
+      var row = out[key];
+      if (!row) { row = out[key] = { brand: b, label: lab, g: gen(lab), r: rank(lab), opts: {} }; }
+      var prev = row.opts[ty];
       if (!prev || (avail && !prev.avail)) {
-        out[key] = { brand: b, label: lab, handle: p.handle, avail: avail, price: price, g: gen(lab), r: rank(lab) };
+        row.opts[ty] = { handle: p.handle, avail: avail, price: price, type: ty };
       }
     });
   }
   function group(out) {
     var m = {};
-    Object.keys(out).forEach(function (k) { var o = out[k]; (m[o.brand] = m[o.brand] || []).push(o); });
+    Object.keys(out).forEach(function (k) {
+      var o = out[k];
+      o.avail = Object.keys(o.opts).some(function (t) { return o.opts[t].avail; });
+      (m[o.brand] = m[o.brand] || []).push(o);
+    });
     Object.keys(m).forEach(function (b) {
       m[b].sort(function (a, c) {
         if (a.avail !== c.avail) return a.avail ? -1 : 1;
