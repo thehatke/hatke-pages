@@ -134,6 +134,7 @@
 
     host.innerHTML =
       '<div class="card">' +
+      (item.image ? '<div class="shot"><img src="' + esc(String(item.image).replace(/(\.[a-z]+)(\?|$)/i, "_600x$1$2")) + '" alt="' + esc(item.product_title || item.title) + '"><span class="gcount">+ ' + GIFTS.length + ' free gifts</span></div>' : '') +
       '<div class="cardtop"><div class="k">' + esc(item.product_title || item.title) + '</div>' +
       (model ? '<div class="m">For ' + esc(model) + '</div>' : '') + '</div>' +
       '<ul class="gifts">' +
