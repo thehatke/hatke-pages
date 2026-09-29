@@ -143,6 +143,7 @@
       '<div class="youpay">' + (extra > 0 ? "Just " + inr(extra) + " more than the case alone" : "Same price \u2014 gifts on us") + '</div>' +
       '</div></div>' +
       '<a class="skip" id="hkofSkip">No thanks, just the case</a>' +
+      '<div class="errline" id="hkofErr" style="display:none"></div>' +
       '<div class="stick"><button type="button" class="cta" id="hkofCta">Add combo \u2014 ' + inr(combo.price) + '</button></div>';
 
     $("hkofCta").addEventListener("click", function () { upgrade(item, combo, this); });
