@@ -157,11 +157,10 @@
     (MODELS[brand] || []).forEach(function (m) {
       ["invisi", "magsafe"].forEach(function (ty) {
         var o = m.opts && m.opts[ty];
-        if (!o) return;
+        if (!o || !o.avail) return;
         var opt = document.createElement("option");
         opt.value = "/products/" + o.handle;
-        opt.textContent = m.label + " \u2014 " + (ty === "magsafe" ? "With MagSafe \u20b9699" : "Without MagSafe \u20b9599") + (o.avail ? "" : "  \u2022 Out of stock");
-        opt.disabled = !o.avail;
+        opt.textContent = m.label + " \u2014 " + (ty === "magsafe" ? "With MagSafe \u20b9699" : "Without MagSafe \u20b9599");
         sel.appendChild(opt);
       });
     });
