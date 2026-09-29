@@ -89,15 +89,19 @@
           body: JSON.stringify({ id: Number(combo.variant), quantity: 1, properties: props })
         });
       })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error("add " + r.status + " " + t.slice(0, 140)); });
+        return r.json();
+      })
       .then(function () {
         btn.textContent = "Added \u2713";
         setTimeout(goCart, 400);
       })
-      .catch(function () {
+      .catch(function (e) {
         btn.disabled = false;
         btn.textContent = "Add combo \u2014 " + inr(combo.price);
+        var d = $("hkofErr");
+        if (d) { d.style.display = "block"; d.textContent = "Couldn\u2019t add: " + (e && e.message ? e.message : "unknown error"); }
       });
   }
 
