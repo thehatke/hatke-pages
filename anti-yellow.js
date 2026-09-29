@@ -214,8 +214,11 @@
     var items = [], i = 1;
     brandList().forEach(function (b) {
       MODELS[b].forEach(function (m) {
-        if (i > 150) return;
-        items.push({ "@type": "ListItem", position: i++, name: "Anti-Yellow Case for " + (b === "Apple" ? m.label : b + " " + m.label), url: location.origin + "/products/" + m.handle });
+        ["invisi", "magsafe"].forEach(function (ty) {
+          var o = m.opts && m.opts[ty];
+          if (!o || i > 150) return;
+          items.push({ "@type": "ListItem", position: i++, name: (ty === "magsafe" ? "Anti-Yellow MagSafe Case for " : "Invisi Anti-Yellow Case for ") + (b === "Apple" ? m.label : b + " " + m.label), url: location.origin + "/products/" + o.handle });
+        });
       });
     });
     var s = document.createElement("script");
