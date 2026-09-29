@@ -102,14 +102,6 @@
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function () {
-        /* remove the standalone case now the combo covers it */
-        return fetch("/cart/change.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: String(item.key), quantity: 0 })
-        });
-      })
-      .then(function () {
         btn.textContent = "Added \u2713";
         setTimeout(goCart, 400);
       })
