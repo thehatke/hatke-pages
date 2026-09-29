@@ -155,11 +155,15 @@
   function renderModelSelect() {
     var sel = $("ayModel"); sel.innerHTML = '<option value="">Choose model</option>';
     (MODELS[brand] || []).forEach(function (m) {
-      var o = document.createElement("option");
-      o.value = "/products/" + m.handle;
-      o.textContent = m.label + (m.avail ? "" : "  \u2022 Out of stock");
-      o.disabled = !m.avail;
-      sel.appendChild(o);
+      ["invisi", "magsafe"].forEach(function (ty) {
+        var o = m.opts && m.opts[ty];
+        if (!o) return;
+        var opt = document.createElement("option");
+        opt.value = "/products/" + o.handle;
+        opt.textContent = m.label + " \u2014 " + (ty === "magsafe" ? "MagSafe \u20b9699" : "Invisi \u20b9599") + (o.avail ? "" : "  \u2022 Out of stock");
+        opt.disabled = !o.avail;
+        sel.appendChild(opt);
+      });
     });
     sel.value = ""; sel.classList.add("empty"); sel.disabled = !brand;
   }
