@@ -66,17 +66,7 @@
     return ((cart && cart.items) || []).some(function (it) { return ids.indexOf(String(it.variant_id)) > -1; });
   }
 
-  function goCart() {
-    var sels = '#cart-icon-bubble,.header__icon--cart,[data-cart-drawer-toggle],.cart-toggle,a[href*="/cart"],[aria-label*="cart" i]';
-    var best = null, bt = 1e9;
-    document.querySelectorAll(sels).forEach(function (el) {
-      if (!el || el.offsetParent === null || el.closest("#hkof")) return;
-      var r = el.getBoundingClientRect();
-      if (r.width === 0 || r.height === 0) return;
-      if (Math.abs(r.top) < bt) { bt = Math.abs(r.top); best = el; }
-    });
-    if (best) best.click(); else location.href = "/cart";
-  }
+  function goCart() { location.href = "/cart"; }
 
   function upgrade(item, combo, btn) {
     var model = modelOf(item.product_title || item.title);
