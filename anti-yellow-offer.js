@@ -105,7 +105,7 @@
       })
       .catch(function () {
         btn.disabled = false;
-        btn.textContent = "Add combo \u2014 " + inr(PRICE);
+        btn.textContent = "Add combo \u2014 " + inr(combo.price);
       });
   }
 
