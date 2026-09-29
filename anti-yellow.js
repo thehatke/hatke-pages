@@ -194,10 +194,14 @@
     s2.className = "sec";
     s2.innerHTML = '<h2>' + esc(brand) + '</h2><div class="rule"></div><div class="mgrid">' + list.map(function (m) {
       var inv = m.opts.invisi, mag = m.opts.magsafe;
+      if (inv && !inv.avail) inv = null;
+      if (mag && !mag.avail) mag = null;
+      if (!inv && !mag) return "";
+      var one = (inv && !mag) || (mag && !inv);
       var opts = "";
-      if (inv) opts += '<a class="opt' + (inv.avail ? '' : ' off') + '" href="' + (inv.avail ? "/products/" + esc(inv.handle) : "#") + '"><span class="on">Without MagSafe</span><span class="op">' + (inv.avail ? "\u20b9599 combo" : "Out of stock") + '</span></a>';
-      if (mag) opts += '<a class="opt' + (mag.avail ? '' : ' off') + '" href="' + (mag.avail ? "/products/" + esc(mag.handle) : "#") + '"><span class="on">With MagSafe</span><span class="op">' + (mag.avail ? "\u20b9699 combo" : "Out of stock") + '</span></a>';
-      return '<div class="mcard"><div class="mname">' + esc(m.label) + '</div><div class="opts">' + opts + '</div></div>';
+      if (inv) opts += '<a class="opt" href="/products/' + esc(inv.handle) + '"><span class="on">Without MagSafe</span><span class="op">\u20b9599 combo</span></a>';
+      if (mag) opts += '<a class="opt" href="/products/' + esc(mag.handle) + '"><span class="on">With MagSafe</span><span class="op">\u20b9699 combo</span></a>';
+      return '<div class="mcard"><div class="mname">' + esc(m.label) + '</div><div class="opts' + (one ? ' one' : '') + '">' + opts + '</div></div>';
     }).join("") + '</div>';
     host.appendChild(s2);
   }
