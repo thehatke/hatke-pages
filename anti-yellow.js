@@ -186,8 +186,12 @@
     if (!list.length) { host.insertAdjacentHTML("beforeend", '<div class="note">No ' + esc(brand) + ' models available right now.</div>'); return; }
     var s2 = document.createElement("section");
     s2.className = "sec";
-    s2.innerHTML = '<h2>' + esc(brand) + '</h2><div class="rule"></div><div class="grid">' + list.map(function (m) {
-      return '<a class="card" href="/products/' + esc(m.handle) + '"><span class="lbl">' + esc(m.label) + '</span><span class="n' + (m.avail ? '' : ' oos') + '">' + (m.avail ? (m.price ? inr(m.price) + " \u203a" : "Shop \u203a") : "Out of stock") + '</span></a>';
+    s2.innerHTML = '<h2>' + esc(brand) + '</h2><div class="rule"></div><div class="mgrid">' + list.map(function (m) {
+      var inv = m.opts.invisi, mag = m.opts.magsafe;
+      var opts = "";
+      if (inv) opts += '<a class="opt' + (inv.avail ? '' : ' off') + '" href="' + (inv.avail ? "/products/" + esc(inv.handle) : "#") + '"><span class="on">Invisi</span><span class="op">' + (inv.avail ? "\u20b9599 combo" : "Out of stock") + '</span></a>';
+      if (mag) opts += '<a class="opt' + (mag.avail ? '' : ' off') + '" href="' + (mag.avail ? "/products/" + esc(mag.handle) : "#") + '"><span class="on">MagSafe</span><span class="op">' + (mag.avail ? "\u20b9699 combo" : "Out of stock") + '</span></a>';
+      return '<div class="mcard"><div class="mname">' + esc(m.label) + '</div><div class="opts">' + opts + '</div></div>';
     }).join("") + '</div>';
     host.appendChild(s2);
   }
