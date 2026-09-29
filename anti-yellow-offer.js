@@ -16,11 +16,12 @@
 */
 (function () {
   var C = window.OFFER_CONFIG || {};
-  var VARIANT = C.variant;
-  var PRICE = C.price || 599;
-  var MRP = C.compareAt || 1099;
+  var COMBOS = C.combos || {};
   var MATCH = (C.match || "anti yellow").toLowerCase();
   var GIFTS = C.gifts || ["Camera Lens Protector", "Tempered Glass", "Cable Protector", "Suction Pad", "Charging Cable"];
+
+  function typeOf(title) { return /magsafe|mag safe/i.test(String(title)) ? "magsafe" : "invisi"; }
+  function comboFor(item) { return COMBOS[typeOf(item.product_title || item.title)] || null; }
 
   var $ = function (i) { return document.getElementById(i); };
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
