@@ -61,7 +61,8 @@
     return null;
   }
   function hasCombo(cart) {
-    return ((cart && cart.items) || []).some(function (it) { return String(it.variant_id) === String(VARIANT); });
+    var ids = Object.keys(COMBOS).map(function (k) { return String(COMBOS[k].variant); });
+    return ((cart && cart.items) || []).some(function (it) { return ids.indexOf(String(it.variant_id)) > -1; });
   }
 
   function goCart() {
