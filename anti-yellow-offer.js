@@ -89,9 +89,19 @@
     return ((cart && cart.items) || []).some(function (it) { return COMBO_IDS.indexOf(String(it.variant_id)) > -1; });
   }
 
+  /* Open the Hatke cart drawer (it reloads the cart as it opens). The drawer's
+     script may still be loading, so wait up to 1.5 s for it before falling back
+     to the cart page. */
   function goCart() {
-    try { if (typeof window.slideShiprocketSmartCartInFrame === "function") { window.slideShiprocketSmartCartInFrame(); return; } } catch (e) {}
-    location.href = "/cart";
+    var tries = 0;
+    (function go() {
+      try {
+        if (window.HKCart && typeof window.HKCart.open === "function") { window.HKCart.open(); return; }
+        if (typeof window.slideShiprocketSmartCartInFrame === "function") { window.slideShiprocketSmartCartInFrame(); return; }
+      } catch (e) {}
+      if (tries++ < 10) { setTimeout(go, 150); return; }
+      location.href = "/cart";
+    })();
   }
 
   function dealFor(item) {
